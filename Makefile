@@ -25,16 +25,16 @@ bump_minor: _bump_minor_version update_version
 bump_major: _bump_major_version update_version
 
 _bump_patch_version:
-	@sed -i '' "s/\(version:.*\)\.[0-9]*$$/\1.$$(($$($(MAKE) version | sed 's!^[0-9]*\.[0-9]*\.!!') + 1))/" shard.yml
+	@$(SED) -i '' "s/\(version:.*\)\.[0-9]*$$/\1.$$(($$($(MAKE) version | sed 's!^[0-9]*\.[0-9]*\.!!') + 1))/" shard.yml
 
 _bump_minor_version:
-	@sed -i '' "s/\(version:.*[0-9]\.\)[0-9]*\(\..*\)$$/\1$$(($$($(MAKE) version | sed 's!^[0-9]*\.!!;s!\.[0-9]*!!') + 1))\2/" shard.yml
+	@$(SED) -i '' "s/\(version:.*[0-9]\.\)[0-9]*\(\..*\)$$/\1$$(($$($(MAKE) version | sed 's!^[0-9]*\.!!;s!\.[0-9]*!!') + 1))\2/" shard.yml
 
 _bump_major_version:
-	@sed -i '' "s/\(version:[^0-9]*\)[0-9]*\(\..*\)/\1$$(($$($(MAKE) version | sed 's!\.[0-9]*\.[0-9]*!!') + 1))\2/" shard.yml
+	@$(SED) -i '' "s/\(version:[^0-9]*\)[0-9]*\(\..*\)/\1$$(($$($(MAKE) version | sed 's!\.[0-9]*\.[0-9]*!!') + 1))\2/" shard.yml
 
 version:
-	@sed '/version/!d;s/version: //' shard.yml
+	@$(SED) '/version/!d;s/version: //' shard.yml
 
 build: build_release
 build_debug: $(DEBUG_TARGET)
@@ -52,22 +52,22 @@ $(RELEASE_TARGET): update_version $(SOURCES) $(MAKEFILE)
 
 lldb_script: $(LLDB_SCRIPT)
 $(LLDB_SCRIPT): Makefile
-	echo 'target create "$(DEBUG_TARGET)"' > $@
-	echo 'target stop-hook add' >> $@
-	echo 'up' >> $@
-	echo 'bt'  >> $@
-	echo 'DONE' >> $@
-	echo 'run' >> $@
+	@echo 'target create "$(DEBUG_TARGET)"' > $@
+	@echo 'target stop-hook add' >> $@
+	@echo 'up' >> $@
+	@echo 'bt'  >> $@
+	@echo 'DONE' >> $@
+	@echo 'run' >> $@
 
 rename: clean
 	@if [ -z "$(NAME)" ]; then echo "make rename: NAME=new_name argument is missing"; false; fi
-	mv src/$(TARGET)/ src/$(NAME)/
-	find . \( -name README.md -o -name shard.yml -o -name Makefile -o -name '*.cr' \) | xargs -I% sed -i '' 's@$(TARGET)@$(NAME)@g' %
-	find . -name '*.cr' -exec sh -c 'mv "{}" $$(echo "{}" | sed "s@$(TARGET)@$(NAME)@g")' \;
+	@mv src/$(TARGET)/ src/$(NAME)/
+	@find . \( -name README.md -o -name shard.yml -o -name Makefile -o -name '*.cr' \) | xargs -I% sed -i '' 's@$(TARGET)@$(NAME)@g' %
+	@find . -name '*.cr' -exec sh -c 'mv "{}" $$(echo "{}" | sed "s@$(TARGET)@$(NAME)@g")' \;
 
 
 debug: build_debug lldb_script
-	$(LLDB) -S $(LLDB_SCRIPT)
+	@$(LLDB) -S $(LLDB_SCRIPT)
 
 run: build_release
 	@./$(TARGET)
