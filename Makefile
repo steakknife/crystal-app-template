@@ -15,6 +15,7 @@ CRYSTALSPECFLAGS = --profile
 
 CRYSTAL = crystal
 LLDB = lldb
+SED = sed
 
 test: spec
 spec: update_version $(SOURCES) $(MAKEFILE)
