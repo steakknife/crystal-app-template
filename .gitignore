@@ -1,0 +1,9 @@
+/doc/
+/libs/
+/.crystal/
+/.shards/
+/crystal0
+/crystal0.debug
+/*.o
+/bc_flags
+/.lldb_script
