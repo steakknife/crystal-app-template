@@ -20,6 +20,9 @@ A template app in [crystal](https://crystal-lang.org)
 ## Test
 `make test`
 
+## Rename
+`make rename NAME=new_name`
+
 
 ## Usage
 
