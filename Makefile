@@ -45,6 +45,7 @@ $(LLDB_SCRIPT): Makefile
 
 rename: clean
 	@if [ -z "$(NAME)" ]; then echo "make rename: NAME=new_name argument is missing"; false; fi
+	mv src/$(TARGET)/ src/$(NAME)/
 	find . \( -name README.md -o -name shard.yml -o -name Makefile -o -name '*.cr' \) | xargs -I% sed -i '' 's@$(TARGET)@$(NAME)@g' %
 	find . -name '*.cr' -exec sh -c 'mv "{}" $$(echo "{}" | sed "s@$(TARGET)@$(NAME)@g")' \;
 
