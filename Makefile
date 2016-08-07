@@ -20,12 +20,28 @@ test: spec
 spec: update_version $(SOURCES) $(MAKEFILE)
 	@$(CRYSTAL) spec $(CRYSTALFLAGS) $(CRYSTALSPECFLAGS)
 
+bump: _bump_patch_version update_version
+bump_minor: _bump_minor_version update_version
+bump_major: _bump_major_version update_version
+
+_bump_patch_version:
+	@sed -i '' "s/\(version:.*\)\.[0-9]*$$/\1.$$(($$($(MAKE) version | sed 's!^[0-9]*\.[0-9]*\.!!') + 1))/" shard.yml
+
+_bump_minor_version:
+	@sed -i '' "s/\(version:.*[0-9]\.\)[0-9]*\(\..*\)$$/\1$$(($$($(MAKE) version | sed 's!^[0-9]*\.!!;s!\.[0-9]*!!') + 1))\2/" shard.yml
+
+_bump_major_version:
+	@sed -i '' "s/\(version:[^0-9]*\)[0-9]*\(\..*\)/\1$$(($$($(MAKE) version | sed 's!\.[0-9]*\.[0-9]*!!') + 1))\2/" shard.yml
+
+version:
+	@sed '/version/!d;s/version: //' shard.yml
+
 build: build_release
 build_debug: $(DEBUG_TARGET)
 build_release: $(RELEASE_TARGET)
 update_version: src/$(TARGET)/version.cr shard.yml
 src/$(TARGET)/version.cr: shard.yml
-	@sed -i '' -e "s@\\(VERSION = \"\\).*\\(\".*\\)@\\1$$(sed '/version/!d;s/version: //' $^ | tr '\n' '\0')\\2@" $@
+	@sed -i '' "s@\\(VERSION = \"\\).*\\(\".*\\)@\\1$$($(MAKE) version | tr '\n' '\0')\\2@" $@
 	@echo Version now $$(sed '/version/!d;s/version: //' $^)
 
 $(DEBUG_TARGET): update_version $(SOURCES) $(MAKEFILE)
