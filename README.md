@@ -1,6 +1,6 @@
 # crystal0
 
-A template crystal language project
+A template app in [crystal](https://crystal-lang.org)
 
 ## Build
 
