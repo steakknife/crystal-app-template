@@ -35,7 +35,7 @@ _bump_major_version:
 	@$(SED) -i '' "s/^\(version:[^0-9]*\)[0-9]*\(\..*\)/\1$$(($$($(MAKE) version | sed 's!\.[0-9]*\.[0-9]*!!') + 1))\2/" shard.yml
 
 version:
-	@$(SED) '/version/!d;s/^version: //' shard.yml
+	@$(SED) '/^version/!d;s/version: //' shard.yml
 
 build: build_release
 build_debug: $(DEBUG_TARGET)
